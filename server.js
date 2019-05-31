@@ -1,17 +1,17 @@
-const express = require('express');
+const express = require("express");
+const cors = require("cors");
+const routeProjects = require("./routes/routeProjects");
+const routeActions = require("./routes/routeActions");
+
 const server = express();
-
-const actionRouter = require('./actionRouter');
-const projectRouter = require('./projectRouter');
-
-
 server.use(express.json());
+server.use(cors());
 
-server.use('/api/actions', actionRouter);
-server.use('/api/projects', projectRouter);
+server.use("/api/projects", routeProjects);
+server.use("/api/actions", routeActions);
 
 server.get("/", (req, res) => {
-  res.send("Time to get started")
-})
+  res.send(`<h2>sprint challenge</h2>`);
+});
 
 module.exports = server;

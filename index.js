@@ -12,10 +12,10 @@ I need this code, just don't know where, perhaps should make some middleware, do
 
 Go code!
 */
+// code away!
+const server = require("./server");
+const port = 5000;
 
-const server = require ('./server')
-const PORT = process.env.PORT || 8000
-
-server.listen(PORT , () =>{
-    console.log( 'Server listening on port 8000')
-})
+server.listen(port, () => {
+    console.log(`listening on port ${port}`);
+});
