@@ -1,63 +1,60 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
-const dbaction = require('./data/helpers/actionModel')
-router.use(express.json())
 
+const dbAction = require('./data/helpers/actionModel');
 
-router.get('/', (req, res) =>{
-    dbaction.get()
-    .then( project => {
-        res.status(200).json(project)
+router.get("/", (req, res) => {
+  dbAction.get()
+    .then( get => {
+      res.status(200).json(get);
+    })
+    .catch(error => {
+      res.status(500).json({error:{message: "Whoops, that didn't work."}})
+    })
+});
+
+router.post("/", (req, res) => {
+  const newAction = req.body
+  
+  dbAction.insert(newAction)
+    .then( action => {
+      res.status(200).json(action)
+    })
+    .catch(error => {
+      res.status(500).json({error:{message: " Your post did not go through"}})
+    })
+})
+
+router.put("/:id", (req, res) => {
+  const updateAction = req.body
+  const id = req.params.id
+
+  dbAction.update(id, updateAction)
+    .then( action => {
+      res.status(200).json(action)
     })
     .catch( error => {
-        res.status(500).json({error:{message: " that ain't it chief"}})
+      res.status(500).json({error:{message: " that ain't it chief"}})
     })
 })
 
+router.delete("/:id", (req, res) => {
+  const actionid = req.params.id
 
-router.post('/', (req, res) => {
-    const newAction = req.body 
-    dbaction.insert(newAction)
-    .then( action =>{
-        res.status(200).json(action)
-    }).catch( error => {
-        res.status(500).json({error:{message: " that ain't it chief"}})
-    })
-    
-    
-})
-
-router.put('/:id', (req, res) => {
-    const updateAct = req.body
-    const id = req.params.id
-
-    dbaction.update(id, updateAct)
+  dbAction.remove(actionid)
     .then( action => {
-        res.status(200).json(action)
+      if (action) {
+        dbAction.remove(actionid)
+          .then(removeAction => {
+            res.status(201).json(releaseEvents)
+          })
+      } else {
+        res.status(404).json({error:{message: "The item could not be deleted at this time"}})
+      }
     })
-    .catch( err => {
-        res.status(500).json({ error: err, message:"could not update.... oops"})
+    .catch(error => {
+      res.status(500).json({error:{message: "There was a problem deleting the item"}})
     })
-      
 })
 
-router.delete('/:id', (req, res)=>{
-    const actionid = req.params.id
-    dbaction.remove(actionid)
-    .then( action =>{
-        if(action){
-            dbaction.remove(actionid).then(
-                removeaction => {
-                    res.status(201).json(removeaction)
-                }
-            )
-        }else{
-            res.status(404).json({ error: err, mesage : "The user with specified ID does no exist"})
-        }
-    })
-    .catch(error =>{
-        res.status(500).json({  message: "The user could not be removed"})
-     })
-})
-
-module.exports  = router
+module.exports = router;
